@@ -495,25 +495,22 @@ def build_callback_fn(function_string, userdata_names=[]):
         fixed_library_path = manually_link_libraries(mujoco_path, library_path)
         move(fixed_library_path, library_path)  # Overwrite with fixed library
     module = load_dynamic_ext(name, library_path)
-    # Now that the module is loaded into memory, we can actually delete it
-    build_fn_cleanup(name)
     return module.lib.__fun
 
 
-def build_assets():
-    mujoco_path = discover_mujoco()
-    cymj = load_cython_ext(mujoco_path)
+mujoco_path = discover_mujoco()
+cymj = load_cython_ext(mujoco_path)
 
 
-    # Trick to expose all mj* functions from mujoco in mujoco_py.*
-    class dict2(object):
-        pass
+# Trick to expose all mj* functions from mujoco in mujoco_py.*
+class dict2(object):
+    pass
 
 
-    functions = dict2()
-    for func_name in dir(cymj):
-        if func_name.startswith("_mj"):
-            setattr(functions, func_name[1:], getattr(cymj, func_name))
+functions = dict2()
+for func_name in dir(cymj):
+    if func_name.startswith("_mj"):
+        setattr(functions, func_name[1:], getattr(cymj, func_name))
 
-    # Set user-defined callbacks that raise assertion with message
-    cymj.set_warning_callback(user_warning_raise_exception)
+# Set user-defined callbacks that raise assertion with message
+cymj.set_warning_callback(user_warning_raise_exception)
