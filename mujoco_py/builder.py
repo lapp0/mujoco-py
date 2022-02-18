@@ -500,19 +500,20 @@ def build_callback_fn(function_string, userdata_names=[]):
     return module.lib.__fun
 
 
-mujoco_path = discover_mujoco()
-cymj = load_cython_ext(mujoco_path)
+def build_assets():
+    mujoco_path = discover_mujoco()
+    cymj = load_cython_ext(mujoco_path)
 
 
-# Trick to expose all mj* functions from mujoco in mujoco_py.*
-class dict2(object):
-    pass
+    # Trick to expose all mj* functions from mujoco in mujoco_py.*
+    class dict2(object):
+        pass
 
 
-functions = dict2()
-for func_name in dir(cymj):
-    if func_name.startswith("_mj"):
-        setattr(functions, func_name[1:], getattr(cymj, func_name))
+    functions = dict2()
+    for func_name in dir(cymj):
+        if func_name.startswith("_mj"):
+            setattr(functions, func_name[1:], getattr(cymj, func_name))
 
-# Set user-defined callbacks that raise assertion with message
-cymj.set_warning_callback(user_warning_raise_exception)
+    # Set user-defined callbacks that raise assertion with message
+    cymj.set_warning_callback(user_warning_raise_exception)
