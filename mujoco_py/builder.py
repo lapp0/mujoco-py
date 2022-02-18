@@ -96,6 +96,7 @@ The easy solution is to `import mujoco_py` _before_ `import glfw`.
         force_rebuild = os.environ.get('MUJOCO_PY_FORCE_REBUILD')
         print('force rebuild?', force_rebuild)
         print(cext_so_path, 'exists')
+        print(mujoco_cymj_path, 'needed this so file')
         if force_rebuild:
             # Try to remove the old file, ignore errors if it doesn't exist
             print("Removing old mujoco_py cext", cext_so_path)
